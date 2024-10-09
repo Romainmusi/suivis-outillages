@@ -73,3 +73,106 @@ def add_tool():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Outillages</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Gestion des Outillages</h1>
+
+    <!-- Formulaire pour ajouter un outil -->
+    <h2>Ajouter un nouvel outil</h2>
+    <form action="/add" method="POST">
+        <input type="text" name="name" placeholder="Nom de l'outil" required>
+        <input type="text" name="description" placeholder="Description de l'outil" required>
+        <button type="submit">Ajouter l'outil</button>
+    </form>
+
+    <!-- Liste des outils -->
+    <h2>Liste des outils</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tool in tools %}
+            <tr>
+                <td>{{ tool.name }}</td>
+                <td>{{ tool.description }}</td>
+                <td>{{ 'Emprunté' if tool.is_borrowed else 'Disponible' }}</td>
+                <td>
+                    {% if not tool.is_borrowed %}
+                    <form action="/borrow/{{ tool.id }}" method="POST" style="display:inline;">
+                        <input type="text" name="borrower" placeholder="Nom de l'emprunteur" required>
+                        <button type="submit">Emprunter</button>
+                    </form>
+                    {% else %}
+                    <form action="/return/{{ tool.id }}" method="POST" style="display:inline;">
+                        <button type="submit">Retourner</button>
+                    </form>
+                    {% endif %}
+                    <form action="/delete/{{ tool.id }}" method="POST" style="display:inline;">
+                        <button type="submit" onclick="return confirm('Supprimer cet outil ?');">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+input, button {
+    padding: 10px;
+    margin: 5px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ccc;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+button {
+    cursor: pointer;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+}
+
+button:hover {
+    background-color: #4cae4c;
+}
